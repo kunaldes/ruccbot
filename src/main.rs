@@ -1,3 +1,5 @@
+#![feature(cmp_minmax)]
+
 use lazy_static::lazy_static;
 use poise::serenity_prelude as serenity;
 use rand::{seq::SliceRandom, Rng};
@@ -26,10 +28,9 @@ fn split_input(input: String) -> Vec<String> {
 fn do_choose(choices: String) -> Option<String> {
     if let Some(captures) = RE.captures(choices.as_str()) {
         let (_, [i1, i2]) = captures.extract();
-        if let (Ok(num1), Ok(num2)) = (i1.parse::<i32>(), i2.parse::<i32>()) {
-            if num1 <= num2 {
-                return Some(rand::thread_rng().gen_range(num1..=num2).to_string());
-            }
+        if let (Ok(num1), Ok(num2)) = (i1.parse(), i2.parse()) {
+            let [min, max]: [i32; 2] = std::cmp::minmax(num1, num2);
+            return Some(rand::thread_rng().gen_range(min..=max).to_string());
         }
     }
     let foo: Vec<String> = split_input(choices);
