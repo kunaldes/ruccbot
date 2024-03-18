@@ -41,16 +41,34 @@ fn do_order(items: String) -> Option<String> {
     Some(foo.join(", "))
 }
 
+/// Choose a single entry from a list.
+///
+/// The list can be either a range of positive integers, a comma
+/// separated list or a space separated list.
 #[poise::command(prefix_command, aliases("c"))]
-pub async fn choose(ctx: Context<'_>, #[rest] items: Option<String>) -> Result<(), Error> {
+pub async fn choose(
+    ctx: Context<'_>,
+    #[description = "The list to choose from."]
+    #[rest]
+    items: Option<String>,
+) -> Result<(), Error> {
     if let Some(choice) = do_choose(items.unwrap_or_default()) {
         ctx.say(choice).await?;
     }
     Ok(())
 }
 
+/// Shuffles the input list.
+///
+/// The list must be either comma separated or space separated.
+/// This command does not (and will never) support ordering a numeric range.
 #[poise::command(prefix_command, aliases("o"))]
-pub async fn order(ctx: Context<'_>, #[rest] items: Option<String>) -> Result<(), Error> {
+pub async fn order(
+    ctx: Context<'_>,
+    #[description = "The list to choose from."]
+    #[rest]
+    items: Option<String>,
+) -> Result<(), Error> {
     if let Some(ordering) = do_order(items.unwrap_or_default()) {
         ctx.say(ordering).await?;
     }

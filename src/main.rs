@@ -1,11 +1,33 @@
 #![feature(cmp_minmax)]
 mod choices;
 
-use poise::serenity_prelude as serenity;
+use poise::{builtins::HelpConfiguration, serenity_prelude as serenity};
 
 struct Data {}
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
+
+/// Displays this help text.
+#[poise::command(prefix_command)]
+async fn help(
+    ctx: Context<'_>,
+    #[description = "Command to get help for"]
+    #[rest]
+    command: Option<String>,
+) -> Result<(), Error> {
+    let extra_text_at_bottom = "\
+Type `.help command` for more info on a command.";
+    poise::builtins::help(
+        ctx,
+        command.as_deref(),
+        HelpConfiguration {
+            extra_text_at_bottom,
+            ..Default::default()
+        },
+    )
+    .await?;
+    Ok(())
+}
 
 #[tokio::main]
 async fn main() {
@@ -15,7 +37,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![choices::choose(), choices::order()],
+            commands: vec![choices::choose(), choices::order(), help()],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some(".".into()),
                 ..Default::default()
