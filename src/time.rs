@@ -9,6 +9,11 @@ pub async fn time(ctx: Context<'_>) -> Result<(), Error> {
         .duration_since(UNIX_EPOCH)
         .expect("negative time")
         .as_secs();
-    ctx.say(time.to_string()).await?;
+    ctx.send(
+        poise::CreateReply::default()
+            .content(time.to_string())
+            .ephemeral(true),
+    )
+    .await?;
     Ok(())
 }
