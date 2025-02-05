@@ -1,4 +1,3 @@
-#![feature(cmp_minmax)]
 mod choices;
 mod time;
 

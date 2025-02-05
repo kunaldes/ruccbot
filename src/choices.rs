@@ -1,7 +1,7 @@
 use crate::{Context, Error};
 
 use lazy_static::lazy_static;
-use rand::{seq::SliceRandom, Rng};
+use rand::{seq::IndexedRandom, seq::SliceRandom, Rng};
 use regex::Regex;
 
 lazy_static! {
@@ -24,12 +24,13 @@ fn do_choose(items: String) -> Option<String> {
     if let Some(captures) = RE.captures(items.as_str()) {
         let (_, [i1, i2]) = captures.extract();
         if let (Ok(num1), Ok(num2)) = (i1.parse(), i2.parse()) {
-            let [min, max]: [i32; 2] = std::cmp::minmax(num1, num2);
-            return Some(rand::thread_rng().gen_range(min..=max).to_string());
+            let min: i32 = std::cmp::min(num1, num2);
+            let max: i32 = std::cmp::max(num1, num2);
+            return Some(rand::rng().random_range(min..=max).to_string());
         }
     }
     let foo: Vec<String> = split_input(items);
-    foo.choose(&mut rand::thread_rng()).cloned()
+    foo.choose(&mut rand::rng()).cloned()
 }
 
 fn do_order(items: String) -> Option<String> {
@@ -37,7 +38,7 @@ fn do_order(items: String) -> Option<String> {
     if foo.is_empty() {
         return None;
     }
-    foo.shuffle(&mut rand::thread_rng());
+    foo.shuffle(&mut rand::rng());
     Some(foo.join(", "))
 }
 
