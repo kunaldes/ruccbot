@@ -66,7 +66,7 @@ pub async fn choose(
 #[poise::command(prefix_command, aliases("o"))]
 pub async fn order(
     ctx: Context<'_>,
-    #[description = "The list to choose from."]
+    #[description = "The list to reorder."]
     #[rest]
     items: Option<String>,
 ) -> Result<(), Error> {
