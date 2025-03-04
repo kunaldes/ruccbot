@@ -1,4 +1,5 @@
 mod choices;
+mod slap;
 mod time;
 
 use poise::{builtins::HelpConfiguration, serenity_prelude as serenity};
@@ -37,7 +38,13 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![choices::choose(), choices::order(), time::time(), help()],
+            commands: vec![
+                choices::choose(),
+                choices::order(),
+                time::time(),
+                slap::slap(),
+                help(),
+            ],
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some(".".into()),
                 ..Default::default()
