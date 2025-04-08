@@ -1,27 +1,30 @@
 use crate::{Context, Error};
 
 use lazy_static::lazy_static;
-use rand::{seq::IndexedRandom, seq::SliceRandom, Rng};
+use rand::{
+    seq::{IndexedRandom, SliceRandom},
+    Rng,
+};
 use regex::Regex;
 
 lazy_static! {
     static ref RE: Regex = Regex::new(r"^\s*(\d+)\s*-\s*(\d+)\s*$").unwrap();
 }
 
-fn split_input(input: String) -> Vec<String> {
+fn split_input(input: &str) -> Vec<&str> {
     if input.contains(',') {
         input
             .split(',')
             .skip_while(|x| x.is_empty())
-            .map(|x| x.trim().into())
+            .map(|x| x.trim())
             .collect()
     } else {
-        input.split_whitespace().map(|x| x.into()).collect()
+        input.split_whitespace().collect()
     }
 }
 
-fn do_choose(items: String) -> Option<String> {
-    if let Some(captures) = RE.captures(items.as_str()) {
+fn do_choose(items: &str) -> Option<String> {
+    if let Some(captures) = RE.captures(items) {
         let (_, [i1, i2]) = captures.extract();
         if let (Ok(num1), Ok(num2)) = (i1.parse(), i2.parse()) {
             let min: i32 = std::cmp::min(num1, num2);
@@ -29,11 +32,11 @@ fn do_choose(items: String) -> Option<String> {
             return Some(rand::rng().random_range(min..=max).to_string());
         }
     }
-    let foo: Vec<String> = split_input(items);
-    foo.choose(&mut rand::rng()).cloned()
+    let split_items: Vec<&str> = split_input(items);
+    split_items.choose(&mut rand::rng()).map(|x| x.to_string())
 }
 
-fn do_order(items: String) -> Option<String> {
+fn do_order(items: &str) -> Option<String> {
     let mut foo = split_input(items);
     if foo.is_empty() {
         return None;
@@ -53,7 +56,7 @@ pub async fn choose(
     #[rest]
     items: Option<String>,
 ) -> Result<(), Error> {
-    if let Some(choice) = do_choose(items.unwrap_or_default()) {
+    if let Some(choice) = do_choose(&items.unwrap_or_default()) {
         ctx.say(choice).await?;
     }
     Ok(())
@@ -70,7 +73,7 @@ pub async fn order(
     #[rest]
     items: Option<String>,
 ) -> Result<(), Error> {
-    if let Some(ordering) = do_order(items.unwrap_or_default()) {
+    if let Some(ordering) = do_order(&items.unwrap_or_default()) {
         ctx.say(ordering).await?;
     }
     Ok(())
