@@ -1,6 +1,7 @@
 mod choices;
 mod slap;
 mod time;
+mod weather;
 
 use poise::{builtins::HelpConfiguration, serenity_prelude as serenity};
 
@@ -43,6 +44,7 @@ async fn main() {
                 choices::order(),
                 time::time(),
                 slap::slap(),
+                weather::weather(),
                 help(),
             ],
             prefix_options: poise::PrefixFrameworkOptions {
