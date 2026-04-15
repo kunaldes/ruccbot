@@ -2,7 +2,7 @@ use crate::{Context, Error};
 
 use lazy_static::lazy_static;
 use rand::{
-    Rng,
+    RngExt,
     seq::{IndexedRandom, SliceRandom},
 };
 use regex::Regex;
