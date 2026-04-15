@@ -2,8 +2,8 @@ use crate::{Context, Error};
 
 use lazy_static::lazy_static;
 use rand::{
-    seq::{IndexedRandom, SliceRandom},
     Rng,
+    seq::{IndexedRandom, SliceRandom},
 };
 use regex::Regex;
 
