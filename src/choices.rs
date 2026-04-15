@@ -3,24 +3,12 @@ use crate::{Context, Error};
 use lazy_static::lazy_static;
 use rand::{
     RngExt,
-    seq::{IndexedRandom, SliceRandom},
+    seq::{IteratorRandom, SliceRandom},
 };
 use regex::Regex;
 
 lazy_static! {
     static ref RE: Regex = Regex::new(r"^\s*(\d+)\s*-\s*(\d+)\s*$").unwrap();
-}
-
-fn split_input(input: &str) -> Vec<&str> {
-    if input.contains(',') {
-        input
-            .split(',')
-            .skip_while(|x| x.is_empty())
-            .map(|x| x.trim())
-            .collect()
-    } else {
-        input.split_whitespace().collect()
-    }
 }
 
 fn do_choose(items: &str) -> Option<String> {
@@ -32,12 +20,33 @@ fn do_choose(items: &str) -> Option<String> {
             return Some(rand::rng().random_range(min..=max).to_string());
         }
     }
-    let split_items: Vec<&str> = split_input(items);
-    split_items.choose(&mut rand::rng()).map(|x| x.to_string())
+    if items.contains(',') {
+        items
+            .split(',')
+            .filter(|x| !x.is_empty())
+            .map(|x| x.trim())
+            .choose(&mut rand::rng())
+            .map(|x| x.to_string())
+    } else {
+        items
+            .split_whitespace()
+            .choose(&mut rand::rng())
+            .map(|x| x.to_string())
+    }
 }
 
 fn do_order(items: &str) -> Option<String> {
-    let mut foo = split_input(items);
+    let mut foo: Vec<&str>;
+    if items.contains(',') {
+        foo = items
+            .split(',')
+            .filter(|x| !x.is_empty())
+            .map(|x| x.trim())
+            .collect();
+    } else {
+        foo = items.split_whitespace().collect();
+    }
+
     if foo.is_empty() {
         return None;
     }
