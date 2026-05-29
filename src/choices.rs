@@ -23,8 +23,8 @@ fn do_choose(items: &str) -> Option<String> {
     if items.contains(',') {
         items
             .split(',')
-            .filter(|x| !x.is_empty())
             .map(|x| x.trim())
+            .filter(|x| !x.is_empty())
             .choose(&mut rand::rng())
             .map(|x| x.to_string())
     } else {
