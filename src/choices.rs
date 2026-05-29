@@ -40,8 +40,8 @@ fn do_order(items: &str) -> Option<String> {
     if items.contains(',') {
         foo = items
             .split(',')
-            .filter(|x| !x.is_empty())
             .map(|x| x.trim())
+            .filter(|x| !x.is_empty())
             .collect();
     } else {
         foo = items.split_whitespace().collect();
